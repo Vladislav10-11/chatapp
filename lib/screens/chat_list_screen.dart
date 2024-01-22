@@ -1,4 +1,5 @@
 import 'package:crash/conatans/constans.dart';
+import 'package:crash/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -42,7 +43,12 @@ class ChatListScreen extends StatelessWidget {
             ), // Add your logic for last message
             onTap: () {
               // Navigate to chat screen or perform other actions when tapped
-              print('Tapped on ${chatItems[index]}');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(username: chatItems[index]),
+                ),
+              );
             },
           );
         },
