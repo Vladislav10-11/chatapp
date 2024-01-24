@@ -1,3 +1,4 @@
+import 'package:crash/components/user_tile.dart';
 import 'package:crash/conatans/constans.dart';
 import 'package:crash/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
@@ -27,30 +28,18 @@ class ChatListScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: chatItems.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            leading: CircleAvatar(
-              // You can use an image here if you have user avatars
-              backgroundColor: Colors.white,
-              child: Text(chatItems[index][0].toUpperCase()),
-            ),
-            title: Text(
-              chatItems[index],
-              style: GoogleFonts.spaceMono(color: whiteColor),
-            ),
-            subtitle: Text(
-              'Last message received...',
-              style: GoogleFonts.spaceMono(),
-            ), // Add your logic for last message
-            onTap: () {
-              // Navigate to chat screen or perform other actions when tapped
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatScreen(username: chatItems[index]),
-                ),
-              );
-            },
-          );
+          return UserTile(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ChatScreen(username: chatItems[index]),
+                    ));
+              },
+              avatar: chatItems[index],
+              name: chatItems[index],
+              msg: chatItems[index]);
         },
       ),
     );
