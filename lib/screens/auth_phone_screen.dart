@@ -36,7 +36,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => OTPScreen(
+                    builder: (context) => OtpScreen(
                       phoneNumber: _phoneNumberController.text,
                     ),
                   ),

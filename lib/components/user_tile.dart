@@ -1,5 +1,4 @@
 import 'package:crash/conatans/constans.dart';
-import 'package:crash/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

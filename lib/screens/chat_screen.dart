@@ -1,5 +1,6 @@
 import 'package:crash/conatans/constans.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -14,6 +15,25 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController _messageController = TextEditingController();
 
+  // Reference to Firestore collection
+  final CollectionReference _messagesCollection =
+      FirebaseFirestore.instance.collection('messages');
+
+  // Method to send message
+  Future<void> _sendMessage() async {
+    String messageText = _messageController.text.trim();
+    if (messageText.isNotEmpty) {
+      // Add message to Firestore
+      await _messagesCollection.add({
+        'username': widget.username,
+        'message': messageText,
+        'timestamp': DateTime.now(),
+      });
+      // Clear text field after sending message
+      _messageController.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,44 +42,60 @@ class _ChatScreenState extends State<ChatScreen> {
         backgroundColor: backgroundColor,
         title: Text(
           widget.username.toUpperCase(),
-          style: GoogleFonts.spaceMono(
-            color: whiteColor,
-          ),
+          style: GoogleFonts.spaceMono(color: whiteColor),
         ),
       ),
       body: Column(
         children: [
           Expanded(
-            child: Container(
-              // Placeholder for chat messages, you can replace this with your chat UI
-              color: backgroundColor,
-              child: Center(
-                child: Text(
-                  'Chat messages go here'.toUpperCase(),
-                  style: GoogleFonts.spaceMono(color: whiteColor),
-                ),
-              ),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _messagesCollection
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                final List<DocumentSnapshot> documents = snapshot.data!.docs;
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: documents.length,
+                  itemBuilder: (context, index) {
+                    final message =
+                        documents[index].data() as Map<String, dynamic>;
+                    return ListTile(
+                      title: Text(
+                        message['username'].toUpperCase(),
+                        style: GoogleFonts.spaceMono(color: whiteColor),
+                      ),
+                      subtitle: Text(message['message'],
+                          style: GoogleFonts.spaceMono(color: whiteColor)),
+                    );
+                  },
+                );
+              },
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(25.0),
+            padding: const EdgeInsets.all(28.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
-                        hintText: 'Type your message...',
-                        hintStyle: GoogleFonts.spaceMono(color: whiteColor)),
+                      hintText: 'Type your message...',
+                      hintStyle: GoogleFonts.spaceMono(color: whiteColor),
+                    ),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: () {
-                    // Add logic to send the message
-                    print('Message sent: ${_messageController.text}');
-                    _messageController.clear();
-                  },
+                  onPressed: _sendMessage,
+                  color: whiteColor,
                 ),
               ],
             ),

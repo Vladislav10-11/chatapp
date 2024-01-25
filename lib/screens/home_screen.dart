@@ -1,6 +1,6 @@
 import 'package:crash/conatans/constans.dart';
 import 'package:crash/screens/chat_list_screen.dart';
-import 'package:crash/screens/chat_services.dart';
+import 'package:crash/services/auth_sevice.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,7 +9,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-final ChatService _chatService = ChatService();
+final AuthService _authService = AuthService();
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
