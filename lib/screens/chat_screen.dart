@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String username;
+  final String receiverIdentifier;
 
-  ChatScreen({required this.username});
+  ChatScreen({required this.receiverIdentifier});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -25,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (messageText.isNotEmpty) {
       // Add message to Firestore
       await _messagesCollection.add({
-        'username': widget.username,
+        'username': widget.receiverIdentifier,
         'message': messageText,
         'timestamp': DateTime.now(),
       });
@@ -41,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         backgroundColor: backgroundColor,
         title: Text(
-          widget.username.toUpperCase(),
+          widget.receiverIdentifier.toUpperCase(),
           style: GoogleFonts.spaceMono(color: whiteColor),
         ),
       ),
